@@ -9,14 +9,15 @@ services:
     image: nextcloud
     container_name: nextcloud
     restart: unless-stopped
-    ports:
-      - 8080:80
     depends_on:
       - database
     volumes:
       - nextcloud:/var/www/html
     env_file:
       - config.env
+    networks:
+      - homelab
+      - nextcloud-data-network
 
   database:
     image: mysql
@@ -26,3 +27,13 @@ services:
       - database:/var/lib/mysql
     env_file:
       - config.env
+    networks:
+      - nextcloud-data-network
+
+networks:
+  homelab:
+    name: homelab
+    driver: bridge
+    external: true
+  nextcloud-data-network:
+    driver: bridge

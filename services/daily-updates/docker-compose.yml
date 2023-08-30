@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  dailyupdates-ui:
+    container_name: dailyupdates-ui
+    image: aaronjtan/daily-updates-ui
+    restart: unless-stopped
+    networks:
+      - homelab
+
+  dailyupdates-server:
+    container_name: dailyupdates-server
+    image: aaronjtan/daily-updates
+    restart: unless-stopped
+    networks:
+      - homelab
+
+networks:
+  homelab:
+    name: homelab
+    driver: bridge
+    external: true

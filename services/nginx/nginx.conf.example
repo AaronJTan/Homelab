@@ -1,0 +1,57 @@
+events {
+    worker_connections 1024;
+}
+
+http {
+    upstream nextcloud {
+        server nextcloud;
+    }
+    upstream dailyupdates {
+        server dailyupdates-ui:3000;
+    }
+
+    upstream navidrome {
+        server navidrome:4533;
+    }
+
+    server {
+        listen 80 default_server;
+        server_name home.com;
+
+        location / {
+            return 404;
+        }
+    }
+
+    server {
+        listen 80;
+        server_name nextcloud.home.com;
+
+        location / {
+            proxy_pass http://nextcloud/;
+            
+            include /etc/nginx/proxy_directives.conf;
+        }
+    }
+
+    server {
+        listen 80;
+        server_name dailyupdates.home.com;
+
+        location / {
+            proxy_pass http://dailyupdates;
+            
+            include /etc/nginx/proxy_directives.conf;
+        }
+    }
+
+    server {
+        server_name navidrome.home.com;
+
+        location / {
+            proxy_pass http://navidrome/;
+            
+            include /etc/nginx/proxy_directives.conf;
+        }
+    }
+}
